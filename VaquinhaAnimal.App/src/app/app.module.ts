@@ -6,12 +6,18 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { CampanhasComponent } from './campanhas/campanhas.component';
+import { ContatoComponent } from './contato/contato.component';
+import { BlogComponent } from './blog/blog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     HeaderComponent,
+    CampanhasComponent,
+    ContatoComponent,
+    BlogComponent,
     FooterComponent
   ],
   imports: [
