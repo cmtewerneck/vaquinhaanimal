@@ -1,0 +1,150 @@
+<div class="container" data-aos="fade-up">
+  <div class="section-title" style="padding-top: 170px;">
+      <h2>Campanhas</h2>
+  </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid" style="padding-left: 50px; padding-right: 50px; margin-top: -50px;">
+      
+      <div *ngIf="campanhas && campanhas.length" class="table-responsive">
+          <table class="table table-hover" style="white-space: nowrap">
+            <thead class="thead-dark">
+              <tr>
+                <th>Título</th>
+                <th>Valor Desejado</th>
+                <th>Valor Arrecadado</th>
+                <th>Início</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="campanhas && campanhas.length">
+              <tr *ngFor="let campanha of campanhas">
+                <td>{{ campanha.titulo }}</td>
+                <td>{{ campanha.valor_desejado | currency }}</td>
+                <td>{{ campanha.total_arrecadado | currency }}</td>
+                <td>{{ campanha.data_inicio | date: 'dd/MM/yyyy' }}</td>
+                <td *ngIf="campanha.status_campanha == 1">Editável</td>
+                <td *ngIf="campanha.status_campanha == 2">Em Análise</td>
+                <td *ngIf="campanha.status_campanha == 3">Em Andamento</td>
+                <td *ngIf="campanha.status_campanha == 4">Finalizada</td>
+                <td *ngIf="campanha.status_campanha == 5">Rejeitada</td>
+                
+                <td class="text-right">
+                  <a *ngIf="campanha.status_campanha == 1 || campanha.status_campanha == 2 || campanha.status_campanha == 3" class="btn btn-dark btn-sm">
+                    <i class="icofont-ui-search"></i>
+                  </a>&nbsp;
+                  <a *ngIf="campanha.status_campanha == 2" class="btn btn-warning btn-sm"  data-toggle="modal" data-target="#retornarCampanha" (click)="salvarId(campanha.id)">
+                    <i class="icofont-edit"></i>
+                  </a>&nbsp;
+                  <a *ngIf="campanha.status_campanha == 2" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#iniciarCampanha" (click)="salvarId(campanha.id)">
+                    <i class="icofont-check"></i>
+                  </a>&nbsp;
+                  <a *ngIf="campanha.status_campanha == 2" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#recusarCampanha" (click)="salvarId(campanha.id)">
+                    <i class="icofont-close"></i>
+                  </a>&nbsp;
+                  <a *ngIf="campanha.status_campanha == 3" class="btn btn-info btn-sm" data-toggle="modal" data-target="#pararCampanha" (click)="salvarId(campanha.id)"> 
+                    <i class="icofont-ui-pause"></i>
+                  </a>&nbsp;
+                  <a *ngIf="campanha.status_campanha == 4" class="btn btn-success btn-sm">
+                    <i class="icofont-money"></i>
+                  </a>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+      <div *ngIf="!campanhas || campanhas.length == 0" style="text-align: center;">
+          <h3 style="text-align: center;">Nenhuma campanha até o momento!</h3>
+      </div>
+
+  </div>
+</section>
+
+<!-- MODAL INICIAR CAMPANHA -->
+<div class="modal fade" id="iniciarCampanha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>A campanha será iniciada e seu status será alterado para EM ANDAMENTO.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="iniciarCampanha()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INICIAR CAMPANHA -->
+<div class="modal fade" id="pararCampanha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>A campanha será encerrada e seu status será alterado para FINALIZADA.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="pararCampanha()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INICIAR CAMPANHA -->
+<div class="modal fade" id="retornarCampanha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>A campanha retornará ao status EDITÁVEL.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="retornarCampanha()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECUSAR CAMPANHA -->
+<div class="modal fade" id="recusarCampanha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>A campanha será recusada e seus status mudará para REJEITADA.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="rejeitarCampanha()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>

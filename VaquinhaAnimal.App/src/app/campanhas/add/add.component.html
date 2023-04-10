@@ -1,0 +1,349 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+    <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
+<div class="container" data-aos="fade-up">
+    <div class="section-title" style="padding-top: 130px;">
+        <h2>Nova Campanha</h2>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid" style="padding-left: 50px; padding-right: 50px; margin-top: -30px;">
+        
+        <div class="row">
+            <div class="col-md-12">
+                <form enctype="multipart/form-data" (ngSubmit)="adicionarCampanha()" [formGroup]="campanhaForm">
+                    
+                    <div class="alert alert-danger" *ngIf="errors.length > 0">
+                        <h3 id="msgRetorno">Opa! Alguma coisa não deu certo:</h3>
+                        <ul>
+                            <li *ngFor="let error of errors">{{ error }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h5 class="card-header">Dados da Campanha</h5>
+                                <div class="card-body">
+                                    <div class="row">  
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label">Título<span style="color: red;">*</span></label>
+                                            <div>
+                                                <input class="form-control" id="titulo" type="text" formControlName="titulo" />
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('titulo')?.hasError('required') && this.campanhaForm.get('titulo')?.touched">
+                                                Título obrigatório
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('titulo')?.hasError('maxlength') && this.campanhaForm.get('titulo')?.touched">
+                                                Máximo 100 caracteres
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('titulo')?.hasError('minLength') && this.campanhaForm.get('titulo')?.touched">
+                                                Mínimo 10 caracteres
+                                            </div>
+                                        </div>                                         
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">Duração<span style="color: red;">*</span></label>
+                                            <div>
+                                                <select class="form-control bg-white border-md" id="duracao_dias" type="number" formControlName="duracao_dias">
+                                                    <option value=30>30 dias</option>
+                                                    <option value=60>60 dias</option>
+                                                    <option value=90>90 dias</option>
+                                                    <option value=120>120 dias</option>
+                                                </select>
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('duracao_dias')?.hasError('required') && this.campanhaForm.get('duracao_dias')?.touched">
+                                                Duração é obrigatória
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">Valor Desejado<span style="color: red;">*</span></label>
+                                            <div>
+                                                <input class="form-control" id="valor_desejado" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: 'false' }" formControlName="valor_desejado"/>
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('valor_desejado')?.hasError('required') && this.campanhaForm.get('valor_desejado')?.touched">
+                                                Valor desejado obrigatório
+                                            </div>
+                                        </div> 
+                                    </div>  
+                                    
+                                    <div class="row">  
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label">Descrição Curta<span style="color: red;">*</span></label>
+                                            <div>
+                                                <input class="form-control" id="descricao_curta" type="text" formControlName="descricao_curta" />
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_curta')?.hasError('required') && this.campanhaForm.get('descricao_curta')?.touched">
+                                                Descrição curta obrigatória
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_curta')?.hasError('maxlength') && this.campanhaForm.get('descricao_curta')?.touched">
+                                                Máximo 200 caracteres
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_curta')?.hasError('minLength') && this.campanhaForm.get('descricao_curta')?.touched">
+                                                Mínimo 5 caracteres
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label">Descrição Longa<span style="color: red;">*</span> (mín 500 caracteres)</label>
+                                            <div>
+                                                <textarea id="descricao_longa" cols="40" rows="10" maxlength="5000" class="form-control" formControlName="descricao_longa"></textarea>
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_longa')?.hasError('required') && this.campanhaForm.get('descricao_longa')?.touched">
+                                                Descrição longa obrigatória
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_longa')?.hasError('maxlength') && this.campanhaForm.get('descricao_longa')?.touched">
+                                                Máximo 5000 caracteres
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('descricao_longa')?.hasError('minlength') && this.campanhaForm.get('descricao_longa')?.touched">
+                                                Mínimo 500 caracteres
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label">Link do Vídeo (opcional)</label>
+                                            <div>
+                                                <input class="form-control" id="video_url" type="text" formControlName="video_url" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="termos">
+                                                <label class="form-check-label" for="flexSwitchCheckDefault">Li e aceito os <a href="/termos" target="_blank" style="color: rgb(4, 106, 249)">termos</a><span style="color: red">*</span></label>
+                                            </div>
+                                            <div class="text-danger" *ngIf="this.campanhaForm.get('termos')?.hasError('required') && this.campanhaForm.get('termos')?.touched">
+                                                Os termos precisam ser lidos e checado.
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="premium">
+                                                <label class="form-check-label" for="flexSwitchCheckDefault">Quero que a minha campanha seja <a href="/homepage" style="color: rgb(4, 106, 249)" data-toggle="modal" data-target="#premium">PREMIUM</a></label>
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    
+                                    <div class="row" style="text-align: center;">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-danger" role="alert" style="margin-bottom: 30px;">
+                                                <p>Faça o download da declaração de necessidade e leve para o médico responsável preencher. Campanhas sem essa declaração não serão aceitar.</p>
+                                                <p>A mesma será solicitada via e-mail</p>
+                                                <a style="margin-top: 20px;" class="btn btn-primary" target="_blank" href="assets/docs/declaracao_download.pdf">Download da Declaração</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div [formGroup]="beneficiarioForm">
+                        <div class="row" style="margin-top: 40px;">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <h5 class="card-header">Dados do Beneficiário</h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Nome Completo<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <input class="form-control" id="nome" type="text" formControlName="nome" />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('nome')?.hasError('required') && this.beneficiarioForm.get('nome')?.touched">
+                                                    Nome obrigatório
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('nome')?.hasError('maxlength') && this.beneficiarioForm.get('nome')?.touched">
+                                                    Máximo 30 caracteres
+                                                </div>
+                                            </div> 
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Tipo de Documento<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <select class="form-control bg-white border-md" (change)="documentSelected($event)" id="tipo" formControlName="tipo">
+                                                        <option value="individual">CPF</option>
+                                                        <option value="company">CNPJ</option>
+                                                    </select>
+                                                    <div class="text-danger" *ngIf="this.beneficiarioForm.get('tipo')?.hasError('required') && this.beneficiarioForm.get('tipo')?.touched">
+                                                        Tipo obrigatório
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Número<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <input class="form-control" id="documento" formControlName="documento" mask={{document_mask}} />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('documento')?.hasError('required') && this.beneficiarioForm.get('documento')?.touched">
+                                                    Número obrigatório
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('documento')?.hasError('maxlength') && this.beneficiarioForm.get('documento')?.touched">
+                                                    Máximo 16 caracteres
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('documento')?.hasError('minLength') && this.beneficiarioForm.get('documento')?.touched">
+                                                    Mínimo 11 caracteres
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" style="margin-top: 40px;">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <h5 class="card-header">Conta Bancária do Beneficiário</h5>
+                                    <div class="card-body">
+                                        <div class="alert alert-warning" role="alert" style="margin-bottom: 30px;">
+                                            Os valores só serão repassados diretamente ao beneficiário da campanha. Os dados abaixo devem ser de uma conta bancária em nome do mesmo.
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-md-4">
+                                                <label class="control-label">Código do Banco<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <select class="form-control" id="codigo_banco" formControlName="codigo_banco">
+                                                        <option *ngFor="let banco of bancos" value="{{banco.value}}">{{banco.value}} - {{banco.label}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('codigo_banco')?.hasError('required') && this.beneficiarioForm.get('codigo_banco')?.touched">
+                                                    Código obrigatório
+                                                </div>
+                                            </div> 
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Agência<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <input mask="9999" class="form-control" id="numero_agencia" formControlName="numero_agencia" />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('numero_agencia')?.hasError('required') && this.beneficiarioForm.get('numero_agencia')?.touched">
+                                                    Agência obrigatória
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('numero_agencia')?.hasError('maxlength') && this.beneficiarioForm.get('numero_agencia')?.touched">
+                                                    Máximo 4 caracteres
+                                                </div>
+                                            </div> 
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Dígito</label>
+                                                <div>
+                                                    <input mask="9" class="form-control" id="digito_agencia" formControlName="digito_agencia" />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('digito_agencia')?.hasError('maxlength') && this.beneficiarioForm.get('digito_agencia')?.touched">
+                                                    Máximo 1 caracteres
+                                                </div>
+                                            </div> 
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Conta<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <input mask="9999999999999" class="form-control" id="numero_conta" formControlName="numero_conta" />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('numero_conta')?.hasError('required') && this.beneficiarioForm.get('numero_conta')?.touched">
+                                                    Conta obrigatória
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('numero_conta')?.hasError('maxlength') && this.beneficiarioForm.get('numero_conta')?.touched">
+                                                    Máximo 13 caracteres
+                                                </div>
+                                            </div> 
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Dígito<span style="color: red;">*</span></label>
+                                                <div>
+                                                    <input mask="99" class="form-control" id="digito_conta" formControlName="digito_conta" />
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('digito_conta')?.hasError('required') && this.beneficiarioForm.get('digito_conta')?.touched">
+                                                    Dígito obrigatório
+                                                </div>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('digito_conta')?.hasError('maxlength') && this.beneficiarioForm.get('digito_conta')?.touched">
+                                                    Máximo 2 caracteres
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Tipo da Conta<span style="color: red;">*</span></label>
+                                                <select class="form-control bg-white border-md" formControlName="tipo_conta">
+                                                    <option value="checking">Corrente</option>
+                                                    <option value="savings">Poupança</option>
+                                                </select>
+                                                <div class="text-danger" *ngIf="this.beneficiarioForm.get('tipo_conta')?.hasError('required') && this.beneficiarioForm.get('tipo_conta')?.touched">
+                                                    Tipo obrigatório
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="margin-top: 40px;">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h5 class="card-header">Imagem da Capa</h5>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Imagem de Capa (sugerido largura acima de 800px)</label>
+                                            <div class="custom-file">
+                                                <input type="file" accept="image/jpeg,image/png" class="custom-file-input" id="arquivo" formControlName="arquivo" (change)="fileChangeEvent($event)">
+                                                <label data-browse="Procurar" style="width: 400px" class="custom-file-label"></label>
+                                                
+                                                <span *ngIf='imagemNome'><br>{{ imagemNome }} <br></span>
+                                            </div>
+                                            
+                                            <div *ngIf='imagemNome' class="row">
+                                                <div class="col col-md-12">
+                                                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [containWithinAspectRatio]="containWithinAspectRatio" [aspectRatio]="4 / 2" [resizeToWidth]="800" [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false"
+                                                    [canvasRotation]="canvasRotation" [transform]="transform" [alignImage]="'left'" [style.display]="showCropper ? null : 'none'" format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady($event)"
+                                                    (loadImageFailed)="loadImageFailed()"></image-cropper>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="text-align: center; margin-top: 20px;">
+                        <input type="submit" [disabled]="!campanhaForm.valid" value="Salvar" class="btn btn-success" style="width: 25%;">&nbsp;
+                        <a class="btn btn-primary"  [routerLink]="['']">Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal PREMIUM -->
+<div class="modal fade" id="premium" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>As campanhas PREMIUM terão destaque na plataforma e também serão as mais divulgadas nas 
+            mídias da Doadores Especiais.
+          </p>
+          <p>Você não precisará pagar nada agora para isso. Ao final da campanha, a Doadores ficará com 5% 
+            do valor arrecadado além da comissão já estabelecida nos termos.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Ciente</button>
+        </div>
+      </div>
+    </div>
+  </div>

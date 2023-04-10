@@ -1,0 +1,718 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+    <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
+<div class="container" data-aos="fade-up">
+    <div class="section-title" style="padding-top: 170px;">
+        <h2>Detalhes</h2>
+    </div>
+</div>
+
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v15.0&appId=862018461479943&autoLogAppEvents=1" nonce="TyZYwuYG"></script>
+
+<!-- Main content -->
+<section class="container" style="background-color: #f8f8f8; margin-bottom: 50px; padding-top: 15px;">
+    <div class="row" style="margin-bottom: 30px;">
+        
+        <div class="col-md-12">
+            <img *ngIf="campanha.imagens.length != 0" style="width: 100%;" class="card-img-top" src="{{ imagens }}{{ campanha.imagens[0].arquivo }}" alt="Card image cap">
+            <img *ngIf="campanha.imagens.length == 0" style="width: 100%;" class="card-img-top" src="assets/img/noImage.png" alt="Card image cap">
+        </div>
+        
+        <div class="col-md-12">
+            <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+                <div class="col-md-8">
+                    <h4 style="text-transform: uppercase; color: #333333; font-size: 20px;">{{ campanha.titulo }}</h4>
+                    <p style="color: #777777; font-size: 15px;">{{ campanha.descricao_curta }}</p>
+                </div>
+                
+                <div class="col-md-4" style="border-left-width: 1px; border-left-style: solid; border-left-color: #dcdcdc;">
+                    <p style="font-weight: bold;">Valor desejado: <span style="font-weight: normal;">{{ campanha.valor_desejado | currency }}</span></p>
+                    <p style="font-weight: bold;">Valor arrecadado: <span style="font-weight: normal;">{{ campanha.total_arrecadado | currency }}</span></p>
+                    <p style="font-weight: bold;">Restam: <span style="font-weight: normal;">{{ restam }} dias</span></p>
+                    <p *ngIf="!campanha.premium" style="font-weight: bold;">Categoria: <span style="font-weight: normal;">Normal</span></p>
+                    <p *ngIf="campanha.premium" style="font-weight: bold;">Categoria: <span style="font-weight: normal;">PREMIUM</span></p>
+                    <p style="font-weight: bold; text-align: center; padding-top: 10px;"><i class="icofont-heart-alt"></i> {{totalDoadores}} Doações Realizadas</p>
+                    <div class="row" style="text-align: center; margin-top: 40px;">
+                        <p class="col-md-4" data-href="https://www.doadoresespeciais.com.br" data-layout="button" data-size="small">
+                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.doadoresespeciais.com.br%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+                                <img src="assets/img/facebook_icon_200_200.png" width="50px" height="50px" alt="Share on Facebook">
+                            </a>
+                        </p>
+                        <p class="col-md-4">
+                            <a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Olá! Por favor, ajudem para que nossa campanha alcance a meta. Isso vai mudar a nossa vida." data-url="https://www.doadoresespeciais.com.br" data-via="Plataforma_DoE" data-lang="pt" data-show-count="false">
+                                <img width="50" height="50" src="assets/img/twitter_icon_200_200.png" alt="Share on Twitter">
+                            </a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </p>
+                        <p class="col-md-4">
+                            <a target="_blank" href="https://api.whatsapp.com/send?text=Ajude%20para%20que%20nossa%20campanha%20atinja%20a%20meta%0a%0a$https://www.doadoresespeciais.com.br">
+                                <img width="50" height="50" src="assets/img/whatsapp_icon_200_200.png" alt="Share on WhatsApp">
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <h4 style="text-transform: uppercase; color: #333333; font-size: 20px;">Sobre a campanha</h4>
+            <p style="color: #777777; font-size: 15px; text-align: justify;">{{ campanha.descricao_longa }}</p>
+        </div>
+
+        <div class="col-md-12" style="margin-top: 20px; text-align: center;">
+            <h4 style="text-transform: uppercase; color: #333333; font-size: 20px;">Vídeo</h4>
+            <p *ngIf="campanha.video_url == '' || campanha.video_url == null" style="color: #777777; font-size: 15px;">Nenhum vídeo cadastrado</p>
+            <p *ngIf="campanha.video_url != '' && campanha.video_url != null" style="color: #777777; font-size: 15px;">
+                <iframe width="560px" height="315px" [src]="campanha.video_url | safe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </p>
+        </div>
+
+        <!-- <div class="col-md-12">
+            <h4 style="text-transform: uppercase; color: #333333; font-size: 20px; margin-top: 20px;">Galeria</h4>
+            <p style="color: #777777; font-size: 15px; text-align: justify;">Inserir galeria aqui</p>
+        </div> -->
+        
+    </div>
+    
+    <div style="text-align: center;" *ngIf="doarToggle == false && userLogado == true">
+        <a (click)="queroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-success">Quero Doar</a>
+        <a href="javascript:history.back()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Voltar às campanhas</a>
+    </div>
+
+    <div style="text-align: center;" *ngIf="userLogado == false">
+        <a [routerLink]="['/auth/register']" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-success">Quero Doar</a>
+        <a href="javascript:history.back()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Voltar às campanhas</a>
+    </div>
+    
+    <!-- FORMA DE PAGAMENTO -->
+    <div class="container-fluid" style="padding-left: 30px; padding-right: 30px;" *ngIf="doarToggle">
+        <div class="row" style="padding-bottom: 30px;">
+            <div class="col-md-6">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Selecione a Forma de Pagamento</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="pix" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        PIX
+                                    </label>
+                                </div>
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="credit_card" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        Cartão de Crédito
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="billing" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        Boleto Bancário
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FORMULÁRIO DE DOAÇÃO - CRÉDITO -->
+            <div class="col-md-6" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'credit_card'">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Selecione o Cartão</h5>
+                    <div class="card-body">
+                        
+                        <!-- CARTÃO NOVO OU CADASTRADO? -->
+                        <div class="row" style="padding-left: 15px;">
+                            <div>
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="selecionarCartao" type="radio" value="cartaoCadastrado" (change)="cardToBeUsed($event)">
+                                    <label class="form-check-label">
+                                        Usar cartão cadastrado
+                                    </label>
+                                </div>
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="selecionarCartao" type="radio" value="cartaoNovo" (change)="cardToBeUsed($event)">
+                                    <label class="form-check-label">
+                                        Usar novo cartão
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FORMULÁRIO DE DOAÇÃO - PIX -->
+            <div class="col-md-6" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'pix'">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Pagamento por PIX</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <form enctype="multipart/form-data" class="col-md-12" [formGroup]="pixForm">
+                                <div class="form-group" formArrayName="items" *ngFor="let item of itemsPixArray.controls; let i = index">
+                                    <div [formGroupName]="i">
+                                        <div class="form-group">
+                                            <label required class="control-label">Valor</label>
+                                            <div>
+                                                <input class="form-control" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: 'false' }" formControlName="amount"/>
+                                                <!-- <input class="form-control" type="number" formControlName="amount"/> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <a (click)="realizarDoacaoPix(qrCode)" style="cursor: pointer; margin-top: 25px; text-align: center;" class="get-started-btn-success">Gerar QR CODE</a>
+                                        <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FORMULÁRIO DE DOAÇÃO - BOLETO -->
+            <div class="col-md-6" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'billing'">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Pagamento por Boleto</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <form enctype="multipart/form-data" class="col-md-12" [formGroup]="boletoForm">
+                                <div class="form-group" formArrayName="items" *ngFor="let item of itemsBoletoArray.controls; let i = index">
+                                    <div [formGroupName]="i">
+                                        <div class="form-group">
+                                            <label required class="control-label">Valor (mín R$ 10,00)</label>
+                                            <div>
+                                                <input class="form-control" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: 'false' }" formControlName="amount"/>
+                                                <!-- <input class="form-control" type="number" formControlName="amount"/> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <a (click)="realizarDoacaoBoleto()" style="cursor: pointer; margin-top: 25px; text-align: center;" class="get-started-btn-success">Gerar Boleto</a>
+                                        <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                                    </div>
+                                </div>
+                                
+                            </form>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>   
+    </div>
+    
+    <!-- FORMULÁRIOS DE USO DE CARTÃO CADASTRADO OU CARTÃO NOVO -->
+    <div class="row" style="padding-left: 30px;">
+        <div class="col-md-12" *ngIf="cartaoToggle == 'cartaoCadastrado'" style="padding-right: 45px;">
+            <!-- FORMULÁRIO DE USO DE CARTÃO CADASTRADO -->
+            <div class="card" style="height: 100%;">
+                <h5 class="card-header" style="text-align: center;">Dados do Cartão</h5>
+                <div class="card-body">
+                    <form enctype="multipart/form-data" class="col-md-12" [formGroup]="doacaoForm">
+                        <div class="form-group" formArrayName="items" *ngFor="let item of itemsArray.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div class="form-group">
+                                    <label required class="control-label">Valor</label>
+                                    <div>
+                                        <input class="form-control" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: 'false' }" formControlName="amount"/>
+                                        <!-- <input prefix="R$" class="form-control" type="number" formControlName="amount"/> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" formArrayName="payments" *ngFor="let payment of paymentsArray.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div formGroupName="credit_card">
+                                    <div class="form-group">
+                                        <label required class="control-label">Cartão</label>
+                                        <div>
+                                            <select class="form-control" required formControlName="card_id">
+                                                <option *ngFor="let cartao of cartoes.data" value="{{cartao.id}}">{{ cartao.first_six_digits }}********{{ cartao.last_four_digits }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div formGroupName="card">
+                                        <div class="form-group">
+                                            <label required class="control-label">CVV</label>
+                                            <div>
+                                                <input class="form-control" formControlName="cvv"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;" *ngIf="doarToggle">
+                            <!-- <input type="submit" value="Doar" class="btn btn-primary" style="width: 200px;"> -->
+                            <a (click)="realizarDoacao()" style="width: 200px; cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Doar</a>
+                            <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-12" *ngIf="cartaoToggle == 'cartaoNovo'" style="padding-right: 45px;">
+            <!-- FORMULÁRIO DE USO DE CARTÃO NOVO -->
+            <div class="card" style="height: 100%;">
+                <h5 class="card-header" style="text-align: center;">Formulário de Doação</h5>
+                <div class="card-body">
+                    <form enctype="multipart/form-data" class="col-md-12" [formGroup]="cartaoNovoForm" (ngSubmit)="realizarDoacaoCartaoNovo()">
+                        <div class="form-group" formArrayName="items" *ngFor="let item of itemsArrayCartaoNovo.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div class="form-group">
+                                    <label required class="control-label">Valor</label>
+                                    <div>
+                                        <input class="form-control" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: 'false' }" formControlName="amount"/>
+                                        <!-- <input prefix="R$" class="form-control" type="number" formControlName="amount"/> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" formArrayName="payments" *ngFor="let payment of paymentsArrayCartaoNovo.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div formGroupName="credit_card">
+                                    <div formGroupName="card">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label required class="control-label">Número do cartão</label>
+                                                    <input class="form-control" mask="0000 0000 0000 0000" formControlName="number"/>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label required class="control-label">Nome no cartão</label>
+                                                    <input class="form-control" formControlName="holder_name"/>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label required class="control-label">CPF</label>
+                                                    <input class="form-control" mask="000.000.000-00" formControlName="holder_document"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="margin-top: 20px;">
+                                                <div class="col-md-3"> 
+                                                    <label required class="control-label">Bandeira</label>
+                                                    <div>
+                                                        <select class="form-control bg-white border-md"  id="brand" formControlName="brand">
+                                                            <option value="Elo">Elo</option>
+                                                            <option value="Mastercard">Mastercard</option>
+                                                            <option value="Visa">Visa</option>
+                                                            <option value="Amex">Amex</option>
+                                                            <option value="JCB">JCB</option>
+                                                            <option value="Aura">Aura</option>
+                                                            <option value="Hipercard">Hipercard</option>
+                                                            <option value="Diners">Diners</option>
+                                                            <option value="Discover">Discover</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label required class="control-label">Mês de expiração</label>
+                                                    <div>
+                                                        <select class="form-control bg-white border-md"  id="exp_month" formControlName="exp_month">
+                                                            <option value="01">Janeiro</option>
+                                                            <option value="02">Fevereiro</option>
+                                                            <option value="03">Março</option>
+                                                            <option value="04">Abril</option>
+                                                            <option value="05">Maio</option>
+                                                            <option value="06">Junho</option>
+                                                            <option value="07">Julho</option>
+                                                            <option value="08">Agosto</option>
+                                                            <option value="09">Setembro</option>
+                                                            <option value="10">Outubro</option>
+                                                            <option value="11">Novembro</option>
+                                                            <option value="12">Dezembro</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label required class="control-label">Ano de expiração (4 dígitos)</label>
+                                                    <input class="form-control" mask="0000" formControlName="exp_year"/>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label required class="control-label">CVV</label>
+                                                    <input class="form-control" mask="9999" formControlName="cvv"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div formGroupName="billing_address">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <label required class="control-label">Endereço</label>
+                                                        <input class="form-control" formControlName="line_1"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label required class="control-label">CEP</label>
+                                                        <input mask="00000-000" class="form-control" formControlName="zip_code"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top: 20px;">
+                                                    <div class="col-md-4">
+                                                        <label required class="control-label">Estado</label>
+                                                        <div>
+                                                            <select required formControlName="state" class="form-control bg-white border-md">
+                                                              <option value="AC">Acre</option>
+                                                              <option value="AL">Alagoas</option>
+                                                              <option value="AP">Amapá</option>
+                                                              <option value="AM">Amazonas</option>
+                                                              <option value="BA">Bahia</option>
+                                                              <option value="CE">Ceará</option>
+                                                              <option value="DF">Distrito Federal</option>
+                                                              <option value="ES">Espírito Santo</option>
+                                                              <option value="GO">Goiás</option>
+                                                              <option value="MA">Maranhão</option>
+                                                              <option value="MT">Mato Grosso</option>
+                                                              <option value="MS">Mato Grosso do Sul</option>
+                                                              <option value="MG">Minas Gerais</option>
+                                                              <option value="PA">Pará</option>
+                                                              <option value="PB">Paraíba</option>
+                                                              <option value="PR">Paraná</option>
+                                                              <option value="PE">Pernambuco</option>
+                                                              <option value="PI">Piauí</option>
+                                                              <option value="RJ">Rio de Janeiro</option>
+                                                              <option value="RN">Rio Grande do Norte</option>
+                                                              <option value="RS">Rio Grande do Sul</option>
+                                                              <option value="RO">Rondônia</option>
+                                                              <option value="RR">Roraima</option>
+                                                              <option value="SC">Santa Catarina</option>
+                                                              <option value="SP">São Paulo</option>
+                                                              <option value="SE">Sergipe</option>
+                                                              <option value="TO">Tocantins</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label required class="control-label">Cidade</label>
+                                                        <input class="form-control" formControlName="city"/>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label required class="control-label">País</label>
+                                                        <div>
+                                                            <select required formControlName="country" class="form-control bg-white border-md">
+                                                              <option value="AF">Afghanistan</option>
+                                                              <option value="AX">Åland Islands</option>
+                                                              <option value="AL">Albania</option>
+                                                              <option value="DZ">Algeria</option>
+                                                              <option value="AS">American Samoa</option>
+                                                              <option value="AD">Andorra</option>
+                                                              <option value="AO">Angola</option>
+                                                              <option value="AI">Anguilla</option>
+                                                              <option value="AQ">Antarctica</option>
+                                                              <option value="AG">Antigua and Barbuda</option>
+                                                              <option value="AR">Argentina</option>
+                                                              <option value="AM">Armenia</option>
+                                                              <option value="AW">Aruba</option>
+                                                              <option value="AU">Australia</option>
+                                                              <option value="AT">Austria</option>
+                                                              <option value="AZ">Azerbaijan</option>
+                                                              <option value="BS">Bahamas</option>
+                                                              <option value="BH">Bahrain</option>
+                                                              <option value="BD">Bangladesh</option>
+                                                              <option value="BB">Barbados</option>
+                                                              <option value="BY">Belarus</option>
+                                                              <option value="BE">Belgium</option>
+                                                              <option value="BZ">Belize</option>
+                                                              <option value="BJ">Benin</option>
+                                                              <option value="BM">Bermuda</option>
+                                                              <option value="BT">Bhutan</option>
+                                                              <option value="BO">Bolivia, Plurinational State of</option>
+                                                              <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                                                              <option value="BA">Bosnia and Herzegovina</option>
+                                                              <option value="BW">Botswana</option>
+                                                              <option value="BV">Bouvet Island</option>
+                                                              <option value="BR">Brasil</option>
+                                                              <option value="IO">British Indian Ocean Territory</option>
+                                                              <option value="BN">Brunei Darussalam</option>
+                                                              <option value="BG">Bulgaria</option>
+                                                              <option value="BF">Burkina Faso</option>
+                                                              <option value="BI">Burundi</option>
+                                                              <option value="KH">Cambodia</option>
+                                                              <option value="CM">Cameroon</option>
+                                                              <option value="CA">Canada</option>
+                                                              <option value="CV">Cape Verde</option>
+                                                              <option value="KY">Cayman Islands</option>
+                                                              <option value="CF">Central African Republic</option>
+                                                              <option value="TD">Chad</option>
+                                                              <option value="CL">Chile</option>
+                                                              <option value="CN">China</option>
+                                                              <option value="CX">Christmas Island</option>
+                                                              <option value="CC">Cocos (Keeling) Islands</option>
+                                                              <option value="CO">Colombia</option>
+                                                              <option value="KM">Comoros</option>
+                                                              <option value="CG">Congo</option>
+                                                              <option value="CD">Congo, the Democratic Republic of the</option>
+                                                              <option value="CK">Cook Islands</option>
+                                                              <option value="CR">Costa Rica</option>
+                                                              <option value="CI">Côte d'Ivoire</option>
+                                                              <option value="HR">Croatia</option>
+                                                              <option value="CU">Cuba</option>
+                                                              <option value="CW">Curaçao</option>
+                                                              <option value="CY">Cyprus</option>
+                                                              <option value="CZ">Czech Republic</option>
+                                                              <option value="DK">Denmark</option>
+                                                              <option value="DJ">Djibouti</option>
+                                                              <option value="DM">Dominica</option>
+                                                              <option value="DO">Dominican Republic</option>
+                                                              <option value="EC">Ecuador</option>
+                                                              <option value="EG">Egypt</option>
+                                                              <option value="SV">El Salvador</option>
+                                                              <option value="GQ">Equatorial Guinea</option>
+                                                              <option value="ER">Eritrea</option>
+                                                              <option value="EE">Estonia</option>
+                                                              <option value="ET">Ethiopia</option>
+                                                              <option value="FK">Falkland Islands (Malvinas)</option>
+                                                              <option value="FO">Faroe Islands</option>
+                                                              <option value="FJ">Fiji</option>
+                                                              <option value="FI">Finland</option>
+                                                              <option value="FR">France</option>
+                                                              <option value="GF">French Guiana</option>
+                                                              <option value="PF">French Polynesia</option>
+                                                              <option value="TF">French Southern Territories</option>
+                                                              <option value="GA">Gabon</option>
+                                                              <option value="GM">Gambia</option>
+                                                              <option value="GE">Georgia</option>
+                                                              <option value="DE">Germany</option>
+                                                              <option value="GH">Ghana</option>
+                                                              <option value="GI">Gibraltar</option>
+                                                              <option value="GR">Greece</option>
+                                                              <option value="GL">Greenland</option>
+                                                              <option value="GD">Grenada</option>
+                                                              <option value="GP">Guadeloupe</option>
+                                                              <option value="GU">Guam</option>
+                                                              <option value="GT">Guatemala</option>
+                                                              <option value="GG">Guernsey</option>
+                                                              <option value="GN">Guinea</option>
+                                                              <option value="GW">Guinea-Bissau</option>
+                                                              <option value="GY">Guyana</option>
+                                                              <option value="HT">Haiti</option>
+                                                              <option value="HM">Heard Island and McDonald Islands</option>
+                                                              <option value="VA">Holy See (Vatican City State)</option>
+                                                              <option value="HN">Honduras</option>
+                                                              <option value="HK">Hong Kong</option>
+                                                              <option value="HU">Hungary</option>
+                                                              <option value="IS">Iceland</option>
+                                                              <option value="IN">India</option>
+                                                              <option value="ID">Indonesia</option>
+                                                              <option value="IR">Iran, Islamic Republic of</option>
+                                                              <option value="IQ">Iraq</option>
+                                                              <option value="IE">Ireland</option>
+                                                              <option value="IM">Isle of Man</option>
+                                                              <option value="IL">Israel</option>
+                                                              <option value="IT">Italy</option>
+                                                              <option value="JM">Jamaica</option>
+                                                              <option value="JP">Japan</option>
+                                                              <option value="JE">Jersey</option>
+                                                              <option value="JO">Jordan</option>
+                                                              <option value="KZ">Kazakhstan</option>
+                                                              <option value="KE">Kenya</option>
+                                                              <option value="KI">Kiribati</option>
+                                                              <option value="KP">Korea, Democratic People's Republic of</option>
+                                                              <option value="KR">Korea, Republic of</option>
+                                                              <option value="KW">Kuwait</option>
+                                                              <option value="KG">Kyrgyzstan</option>
+                                                              <option value="LA">Lao People's Democratic Republic</option>
+                                                              <option value="LV">Latvia</option>
+                                                              <option value="LB">Lebanon</option>
+                                                              <option value="LS">Lesotho</option>
+                                                              <option value="LR">Liberia</option>
+                                                              <option value="LY">Libya</option>
+                                                              <option value="LI">Liechtenstein</option>
+                                                              <option value="LT">Lithuania</option>
+                                                              <option value="LU">Luxembourg</option>
+                                                              <option value="MO">Macao</option>
+                                                              <option value="MK">Macedonia, the former Yugoslav Republic of</option>
+                                                              <option value="MG">Madagascar</option>
+                                                              <option value="MW">Malawi</option>
+                                                              <option value="MY">Malaysia</option>
+                                                              <option value="MV">Maldives</option>
+                                                              <option value="ML">Mali</option>
+                                                              <option value="MT">Malta</option>
+                                                              <option value="MH">Marshall Islands</option>
+                                                              <option value="MQ">Martinique</option>
+                                                              <option value="MR">Mauritania</option>
+                                                              <option value="MU">Mauritius</option>
+                                                              <option value="YT">Mayotte</option>
+                                                              <option value="MX">Mexico</option>
+                                                              <option value="FM">Micronesia, Federated States of</option>
+                                                              <option value="MD">Moldova, Republic of</option>
+                                                              <option value="MC">Monaco</option>
+                                                              <option value="MN">Mongolia</option>
+                                                              <option value="ME">Montenegro</option>
+                                                              <option value="MS">Montserrat</option>
+                                                              <option value="MA">Morocco</option>
+                                                              <option value="MZ">Mozambique</option>
+                                                              <option value="MM">Myanmar</option>
+                                                              <option value="NA">Namibia</option>
+                                                              <option value="NR">Nauru</option>
+                                                              <option value="NP">Nepal</option>
+                                                              <option value="NL">Netherlands</option>
+                                                              <option value="NC">New Caledonia</option>
+                                                              <option value="NZ">New Zealand</option>
+                                                              <option value="NI">Nicaragua</option>
+                                                              <option value="NE">Niger</option>
+                                                              <option value="NG">Nigeria</option>
+                                                              <option value="NU">Niue</option>
+                                                              <option value="NF">Norfolk Island</option>
+                                                              <option value="MP">Northern Mariana Islands</option>
+                                                              <option value="NO">Norway</option>
+                                                              <option value="OM">Oman</option>
+                                                              <option value="PK">Pakistan</option>
+                                                              <option value="PW">Palau</option>
+                                                              <option value="PS">Palestinian Territory, Occupied</option>
+                                                              <option value="PA">Panama</option>
+                                                              <option value="PG">Papua New Guinea</option>
+                                                              <option value="PY">Paraguay</option>
+                                                              <option value="PE">Peru</option>
+                                                              <option value="PH">Philippines</option>
+                                                              <option value="PN">Pitcairn</option>
+                                                              <option value="PL">Poland</option>
+                                                              <option value="PT">Portugal</option>
+                                                              <option value="PR">Puerto Rico</option>
+                                                              <option value="QA">Qatar</option>
+                                                              <option value="RE">Réunion</option>
+                                                              <option value="RO">Romania</option>
+                                                              <option value="RU">Russian Federation</option>
+                                                              <option value="RW">Rwanda</option>
+                                                              <option value="BL">Saint Barthélemy</option>
+                                                              <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
+                                                              <option value="KN">Saint Kitts and Nevis</option>
+                                                              <option value="LC">Saint Lucia</option>
+                                                              <option value="MF">Saint Martin (French part)</option>
+                                                              <option value="PM">Saint Pierre and Miquelon</option>
+                                                              <option value="VC">Saint Vincent and the Grenadines</option>
+                                                              <option value="WS">Samoa</option>
+                                                              <option value="SM">San Marino</option>
+                                                              <option value="ST">Sao Tome and Principe</option>
+                                                              <option value="SA">Saudi Arabia</option>
+                                                              <option value="SN">Senegal</option>
+                                                              <option value="RS">Serbia</option>
+                                                              <option value="SC">Seychelles</option>
+                                                              <option value="SL">Sierra Leone</option>
+                                                              <option value="SG">Singapore</option>
+                                                              <option value="SX">Sint Maarten (Dutch part)</option>
+                                                              <option value="SK">Slovakia</option>
+                                                              <option value="SI">Slovenia</option>
+                                                              <option value="SB">Solomon Islands</option>
+                                                              <option value="SO">Somalia</option>
+                                                              <option value="ZA">South Africa</option>
+                                                              <option value="GS">South Georgia and the South Sandwich Islands</option>
+                                                              <option value="SS">South Sudan</option>
+                                                              <option value="ES">Spain</option>
+                                                              <option value="LK">Sri Lanka</option>
+                                                              <option value="SD">Sudan</option>
+                                                              <option value="SR">Suriname</option>
+                                                              <option value="SJ">Svalbard and Jan Mayen</option>
+                                                              <option value="SZ">Swaziland</option>
+                                                              <option value="SE">Sweden</option>
+                                                              <option value="CH">Switzerland</option>
+                                                              <option value="SY">Syrian Arab Republic</option>
+                                                              <option value="TW">Taiwan, Province of China</option>
+                                                              <option value="TJ">Tajikistan</option>
+                                                              <option value="TZ">Tanzania, United Republic of</option>
+                                                              <option value="TH">Thailand</option>
+                                                              <option value="TL">Timor-Leste</option>
+                                                              <option value="TG">Togo</option>
+                                                              <option value="TK">Tokelau</option>
+                                                              <option value="TO">Tonga</option>
+                                                              <option value="TT">Trinidad and Tobago</option>
+                                                              <option value="TN">Tunisia</option>
+                                                              <option value="TR">Turkey</option>
+                                                              <option value="TM">Turkmenistan</option>
+                                                              <option value="TC">Turks and Caicos Islands</option>
+                                                              <option value="TV">Tuvalu</option>
+                                                              <option value="UG">Uganda</option>
+                                                              <option value="UA">Ukraine</option>
+                                                              <option value="AE">United Arab Emirates</option>
+                                                              <option value="GB">United Kingdom</option>
+                                                              <option value="US">United States</option>
+                                                              <option value="UM">United States Minor Outlying Islands</option>
+                                                              <option value="UY">Uruguay</option>
+                                                              <option value="UZ">Uzbekistan</option>
+                                                              <option value="VU">Vanuatu</option>
+                                                              <option value="VE">Venezuela, Bolivarian Republic of</option>
+                                                              <option value="VN">Viet Nam</option>
+                                                              <option value="VG">Virgin Islands, British</option>
+                                                              <option value="VI">Virgin Islands, U.S.</option>
+                                                              <option value="WF">Wallis and Futuna</option>
+                                                              <option value="EH">Western Sahara</option>
+                                                              <option value="YE">Yemen</option>
+                                                              <option value="ZM">Zambia</option>
+                                                              <option value="ZW">Zimbabwe</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- <div class="form-group col-md-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="salvarCartao">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Salvar Cartão</label>
+                            </div>
+                        </div> -->
+
+                        <div class="alert alert-warning" role="alert" style="margin-bottom: 30px; text-align: center; margin-top: 20px;">
+                            A Pagarme, operadora dos pagamentos, irá incluir o cartão usado na sua Wallet. Obs: Nossa plataforma não armazena nenhum dado do seu cartão.
+                        </div>
+                        
+                        <div style="text-align: center;" *ngIf="doarToggle">
+                            <input type="submit" [disabled]="!cartaoNovoForm.valid" value="Doar" class="btn btn-primary" style="width: 25%;">&nbsp;
+
+                            <!-- <a (click)="realizarDoacaoCartaoNovo()" style="width: 200px; cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Doar</a> -->
+                            <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+
+<!-- MODAL QR CODE PIX-->
+<ng-template #qrCode>
+    <div class="modal-header">
+        <h5 class="modal-title">Leia o QR CODE abaixo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+        <div>
+            <img [src]="qrCodeLink" />
+        </div>
+        <div>
+            <p>
+                O QR CODE expira em 5 minutos!
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="closeModal()">Cancelar</button>
+        <!-- <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">Cancelar</button> -->
+    </div>
+</ng-template>

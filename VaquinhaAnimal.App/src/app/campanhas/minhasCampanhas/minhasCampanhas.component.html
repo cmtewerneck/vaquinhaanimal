@@ -1,0 +1,193 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
+<div class="container" data-aos="fade-up">
+  <div class="section-title" style="padding-top: 170px; margin-bottom: -40px;">
+    <h2>Minhas Campanhas</h2>
+  </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid" style="padding-left: 50px; padding-right: 50px; margin-top: -50px;">
+    
+    <div *ngIf="campanhas && campanhas.length" class="row">
+      <div *ngFor="let campanha of campanhas" class="col-md-6" style="padding-top: 40px;">
+        
+        <div class="card">
+          <div class="card-header" style="text-align: center;">
+            Dados da Campanha
+          </div>
+          
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><b>Título: </b>{{ campanha.titulo }}</p>
+                <p><b>Início: </b>{{ campanha.data_inicio | date: 'dd/MM/yyyy' }}</p>
+              </div>
+
+              <div class="col-md-6">
+                <p><b>Valor Desejado: </b>{{ campanha.valor_desejado | currency }}</p>
+                <p><b>Total Arrecadado: </b>{{ campanha.total_arrecadado | currency }}</p>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div style="text-align: center;" class="col-md-6">
+                <a *ngIf="campanha.status_campanha == 1" style="margin-left: 10px;" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#enviarParaAnalise" (click)="salvarId(campanha.id)">
+                  <span class="ri-play-fill"></span>
+                </a>
+                <a *ngIf="campanha.status_campanha == 1" style="margin-left: 10px;" class="btn btn-warning btn-sm" [routerLink]="['/campanhas/editar', campanha.id]">
+                  <span class="ri-pencil-fill"></span>
+                </a>
+                <a *ngIf="campanha.status_campanha == 1 || campanha.status_campanha == 2" style="margin-left: 10px;" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluir" (click)="salvarId(campanha.id)">
+                  <span class="ri-delete-bin-line"></span>
+                </a>
+                <a *ngIf="campanha.status_campanha == 3" style="margin-left: 10px;" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#pararCampanha" (click)="salvarId(campanha.id)">
+                  <span>Parar</span>
+                </a>
+                <a *ngIf="campanha.status_campanha == 4" style="margin-left: 10px;" class="btn btn-primary btn-sm" (click)="exportToPdf(campanha.id)">
+                  <span>Baixar Relatório</span>
+                </a>
+                <a *ngIf="campanha.status_campanha == 5" style="margin-left: 10px;" class="btn btn-primary btn-sm" href="/campanhas/adicionar-novo">
+                  <span>Criar nova campanha</span>
+                </a>
+              </div>
+              <div class="col-md-3"></div>
+            </div>
+          </div>
+          
+          <div style="text-align: center;" class="card-footer">
+            <div style="text-align: center; height: 31px;">
+              <p *ngIf="campanha.status_campanha == 1"><b>Status:</b> Editável</p>
+              <p *ngIf="campanha.status_campanha == 2"><b>Status:</b> Em Análise</p>
+              <p *ngIf="campanha.status_campanha == 3"><b>Status:</b> Em Andamento</p>
+              <p *ngIf="campanha.status_campanha == 4"><b>Status:</b> Finalizada</p>
+              <p *ngIf="campanha.status_campanha == 5"><b>Status:</b> Rejeitada</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div *ngIf="!campanhas || campanhas.length == 0" style="text-align: center;">
+      <h3 style="text-align: center;">Você não possui campanhas até o momento!</h3>
+      <a [routerLink]="['/campanhas/adicionar-novo']" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-success">Criar campanha</a>
+    </div>
+    
+  </div>
+  
+  <div *ngIf="campanhas && campanhas.length > 0" style="text-align: center; margin-top: 20px;">
+    <a href="/campanhas/adicionar-novo" class="get-started-btn-primary">Criar nova campanha</a>
+  </div>
+</section>
+
+<!-- Modal ENVIAR PARA ANÁLISE-->
+<div class="modal fade" id="enviarParaAnalise" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Sua campanha será enviada para análise. Não será mais possível editá-la!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="enviarParaAnalise()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal PARAR CAMPANHA-->
+<div class="modal fade" id="pararCampanha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Sua campanha será finalizada. Não será mais possível reiniciá-la!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="pararCampanha()" data-dismiss="modal">Finalizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal EXCLUIR -->
+<div class="modal fade" id="excluir" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirma Exclusão?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Sua campanha será excluída. Tem certeza disso?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="limparId()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="deletarCampanha()" data-dismiss="modal">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div *ngIf="campanhas && campanhas.length" class="table-responsive">
+  <table class="table table-hover" style="white-space: nowrap">
+    <thead class="thead-dark">
+      <tr>
+        <th>Título</th>
+        <th>Valor Desejado</th>
+        <th>Arrecadado</th>
+        <th>Início</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody *ngIf="campanhas && campanhas.length">
+      <tr *ngFor="let campanha of campanhas">
+        <td>{{ campanha.titulo }}</td>
+        <td>{{ campanha.valor_desejado | currency }}</td>
+        <td>{{ campanha.total_arrecadado | currency }}</td>
+        <td>{{ campanha.data_inicio | date: 'dd/MM/yyyy' }}</td>
+        <td *ngIf="campanha.status_campanha == 1">Editável</td>
+        <td *ngIf="campanha.status_campanha == 2">Em Análise</td>
+        <td *ngIf="campanha.status_campanha == 3">Em Andamento</td>
+        <td *ngIf="campanha.status_campanha == 4">Finalizada</td>
+        <td *ngIf="campanha.status_campanha == 5">Rejeitada</td>
+        
+        <td class="text-right">
+          <a *ngIf="campanha.status_campanha == 1" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#enviarParaAnalise" (click)="salvarId(campanha.id)">
+            <span class="ri-play-fill"></span>
+          </a>&nbsp;
+          <a *ngIf="campanha.status_campanha == 1" class="btn btn-warning btn-sm" [routerLink]="['/campanhas/editar', campanha.id]">
+            <span class="ri-pencil-fill"></span>
+          </a>&nbsp;
+          <a *ngIf="campanha.status_campanha == 1 || campanha.status_campanha == 2" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluir" (click)="salvarId(campanha.id)">
+            <span class="ri-delete-bin-line"></span>
+          </a>&nbsp;
+          <a *ngIf="campanha.status_campanha == 3" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#pararCampanha" (click)="salvarId(campanha.id)">
+            <span>Parar</span>
+          </a>
+        </td>
+        
+      </tr>
+    </tbody>
+  </table>
+</div> -->

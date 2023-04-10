@@ -1,0 +1,57 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="pacman" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
+<section id="portfolio" class="portfolio" style="padding-top: 150px;">
+  <div class="container" data-aos="fade-up">
+    
+    <div class="section-title">
+      <h2>Campanhas em andamento</h2>
+    </div>
+    
+    <div class="row" style="margin-top: 10px;">
+      <!-- <div *ngFor="let campanha of campanhas" class="col-md-4" style="padding-top: 20px;"> -->
+      <div *ngFor="let campanha of campanhasPaginado.data | paginate: { itemsPerPage: campanhasPaginado.pageSize, currentPage: campanhasPaginado.pageNumber, totalItems: campanhasPaginado.totalRecords }" class="col-md-4" style="padding-top: 20px;">
+        <div class="card">
+          <img *ngIf="campanha.imagens.length != 0" class="card-img-top" src="{{ imagens }}{{ campanha.imagens[0].arquivo }}" alt="Card image cap">
+          <img *ngIf="campanha.imagens.length == 0" class="card-img-top" src="assets/img/noImage.png" alt="Card image cap">
+          <!-- <img class="card-img-top" src="assets/img/noImage.png" alt="Card image cap"> -->
+          <div class="card-body">
+            <h5 class="card-title">{{campanha.titulo}}</h5>
+            <p class="card-text">{{campanha.descricao_curta}}</p>
+          </div>
+          <div style="margin-bottom: 20px; margin-top: 20px; width: 100%;">
+            <div style="padding-left: 20px; margin-bottom: 5px;">
+              <p style="font-weight: bold;">Valor Desejado: <span style="color: royalblue; ">{{campanha.valor_desejado | currency }}</span></p>
+              <p style="font-weight: bold;">Total Arrecadado: <span style="color: royalblue; ">{{campanha.total_arrecadado | currency }}</span></p>
+            </div>
+            <div class="progress" style="height: 20px;">
+              <div [ngClass]="setClasses(campanha.percentual_arrecadado!)" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{width: getWidth(campanha.percentual_arrecadado!)}">
+                {{campanha.percentual_arrecadado!}}%
+              </div>
+            </div>
+          <!-- <progress id="progressBar" style="width: 100%; height: 20px; border-radius: 0;" value="50" max="100"></progress> -->
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+          <button type="button" class="btn btn-outline-primary" [routerLink]="['/campanhas/detalhes', campanha.id]">Visitar Campanha</button>
+        </div>
+        <div class="card-footer text-muted">
+          <p class="card-text" style="text-align: center;"><small class="text-muted">Encerra em {{campanha.restam}} dias</small></p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div *ngIf="campanhasPaginado.data && campanhasPaginado.data.length != 0" style="text-align: center; margin-top: 40px;">
+    <pagination-controls previousLabel="Anterior" nextLabel="Próxima" (pageChange)="pageChanged($event)"></pagination-controls>
+  </div>
+
+  <div *ngIf="!campanhasPaginado.data || campanhasPaginado.data.length == 0" style="text-align: center;">
+    <h3 style="text-align: center;">Nenhuma campanha em andamento até o momento!</h3>
+    <a [routerLink]="['/campanhas/adicionar-novo']" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-success">Criar campanha</a>
+  </div>
+  
+</div>
+</section>

@@ -1,0 +1,252 @@
+<div class="container" data-aos="fade-up">
+    <div class="section-title" style="padding-top: 170px;">
+        <h2>Detalhes</h2>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content" style="padding-top: 0;">
+    <div class="container-fluid" style="padding-left: 30px; padding-right: 30px;">
+        <div class="row" style="padding-bottom: 30px;">
+            <div class="col-md-4">
+                <div class="card text-center" style="height: 100%;">
+                    <h5 class="card-header">Foto de Capa</h5>
+                    <img *ngIf="campanha.imagens.length != 0" class="card-img-top" src="{{ imagens }}{{ campanha.imagens[0].arquivo }}" alt="Card image cap">
+                    <img *ngIf="campanha.imagens.length == 0" class="card-img-top" src="assets/img/noImage.png" alt="Card image cap">
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header">Dados da Campanha</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <dl class="col-md-6">
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Título:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.titulo == ''">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.titulo != ''">{{ campanha.titulo }}</dd>
+                                <br> 
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Início:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.data_inicio == null">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.data_inicio != null">{{ campanha.data_inicio | date:'dd/MM/yyyy' }}</dd>
+                                <br>   
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Encerramento:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.data_encerramento == null">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.data_encerramento != null">{{ campanha.data_encerramento | date:'dd/MM/yyyy' }}</dd>
+                            </dl>
+                            
+                            <dl class="col-md-6">
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Valor Desejado:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.valor_desejado == null">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.valor_desejado != null">R$ {{ campanha.valor_desejado }}</dd>
+                                <br> 
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Total Arrecadado:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.total_arrecadado == null">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.total_arrecadado != null">R$ {{ campanha.total_arrecadado }}</dd>
+                                <br> 
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Duração:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.duracao_dias == null">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.duracao_dias != null">{{ campanha.duracao_dias }} dias</dd>
+                            </dl>
+                            
+                            <dl class="col-md-12">
+                                <dt class="col-sm-'12'">
+                                    <label class="control-label">Descrição Curta:</label>
+                                </dt>
+                                <dd class="col-sm-'12'" *ngIf="campanha.descricao_curta == ''">Não Informado</dd>
+                                <dd class="col-sm-'12'" *ngIf="campanha.descricao_curta != ''">{{ campanha.descricao_curta }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        
+        <div style="text-align: center;" *ngIf="doarToggle == false">
+            <a (click)="queroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-success">Quero Doar</a>
+            <a href="javascript:history.back()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Voltar às campanhas</a>
+        </div>
+    </div>
+    
+    <!-- FORMA DE PAGAMENTO -->
+    <div class="container-fluid" style="padding-left: 30px; padding-right: 30px;" *ngIf="doarToggle">
+        <div class="row" style="padding-bottom: 30px;">
+            <div class="col-md-12">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Selecione a Forma de Pagamento</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="pix" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        PIX
+                                    </label>
+                                </div>
+                                <div class="form-check" style="padding-bottom: 10px;">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="credit_card" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        Cartão de Crédito
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="formaPagamento" type="radio" value="billing" (change)="paymentSelected($event)">
+                                    <label class="form-check-label">
+                                        Boleto Bancário
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+    
+    <!-- FORMULÁRIO DE DOAÇÃO - CRÉDITO -->
+    <div class="row" style="padding-left: 30px;">
+        <div class="col-md-4" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'credit_card'">
+            <div class="card" style="height: 100%;">
+                <h5 class="card-header" style="text-align: center;">Selecione o Cartão</h5>
+                <div class="card-body">
+                    
+                    <!-- CARTÃO NOVO OU CADASTRADO? -->
+                    <div class="row" style="padding-left: 15px;">
+                        <div>
+                            <div class="form-check" style="padding-bottom: 10px;">
+                                <input class="form-check-input" name="selecionarCartao" type="radio" value="cartaoCadastrado" (change)="cardToBeUsed($event)">
+                                <label class="form-check-label">
+                                    Usar cartão cadastrado
+                                </label>
+                            </div>
+                            <div class="form-check" style="padding-bottom: 10px;">
+                                <input class="form-check-input" name="selecionarCartao" type="radio" value="cartaoNovo" (change)="cardToBeUsed($event)">
+                                <label class="form-check-label">
+                                    Usar novo cartão
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8" *ngIf="cartaoToggle == 'cartaoCadastrado'" style="padding-right: 45px;">
+            <!-- FORMULÁRIO DE USO DE CARTÃO CADASTRADO -->
+            <div class="card" style="height: 100%;">
+                <h5 class="card-header" style="text-align: center;">Dados do Cartão</h5>
+                <div class="card-body">
+                    <form enctype="multipart/form-data" class="col-md-12" [formGroup]="doacaoForm">
+                        <div class="form-group" formArrayName="items" *ngFor="let item of itemsArray.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div class="form-group">
+                                    <label required class="control-label">Valor</label>
+                                    <div>
+                                        <input class="form-control" type="number" formControlName="amount"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" formArrayName="payments" *ngFor="let payment of paymentsArray.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <div formGroupName="credit_card">
+                                    <div class="form-group">
+                                        <label required class="control-label">Cartão</label>
+                                        <div>
+                                            <select class="form-control" required formControlName="card_id">
+                                                <option *ngFor="let cartao of cartoes.data" value="{{cartao.id}}">{{ cartao.first_six_digits }}********{{ cartao.last_four_digits }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div formGroupName="card">
+                                        <div class="form-group">
+                                            <label required class="control-label">CVV</label>
+                                            <div>
+                                                <input class="form-control" formControlName="cvv"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;" *ngIf="doarToggle">
+                            <!-- <input type="submit" value="Doar" class="btn btn-primary" style="width: 200px;"> -->
+                            <a (click)="realizarDoacao()" style="width: 200px; cursor: pointer; margin-top: 25px;" class="get-started-btn-primary">Doar</a>
+                            <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FORMULÁRIO DE DOAÇÃO - PIX -->
+    <div class="container-fluid" style="padding-left: 30px; padding-right: 30px;" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'pix'">
+        <div class="row" style="padding-bottom: 30px;">
+            <div class="col-md-12">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Pagamento por PIX</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center;">
+                                <a href="" style="cursor: pointer; margin-top: 25px; text-align: center;" class="get-started-btn-success">GERAR PIX</a>
+                                <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+    
+    <!-- FORMULÁRIO DE DOAÇÃO - BOLETO -->
+    <div class="container-fluid" style="padding-left: 30px; padding-right: 30px;" *ngIf="doarToggle && payment_method_toggle != '' && payment_method_toggle == 'billing'">
+        <div class="row" style="padding-bottom: 30px;">
+            <div class="col-md-12">
+                <div class="card" style="height: 100%;">
+                    <h5 class="card-header" style="text-align: center;">Pagamento por Boleto</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <form enctype="multipart/form-data" class="col-md-12" (ngSubmit)="realizarDoacaoBoleto()" [formGroup]="boletoForm">
+                                <div class="form-group" formArrayName="items" *ngFor="let item of itemsBoletoArray.controls; let i = index">
+                                    <div [formGroupName]="i">
+                                        <div class="form-group">
+                                            <label required class="control-label">Valor</label>
+                                            <div>
+                                                <input class="form-control" type="number" formControlName="amount"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <input type="submit" value="Gerar Boleto" style="cursor: pointer; margin-top: 25px; text-align: center;" class="get-started-btn-success">
+                                        <a (click)="naoQueroDoar()" style="cursor: pointer; margin-top: 25px;" class="get-started-btn-danger">Cancelar</a>
+                                    </div>
+                                </div>
+
+                            </form>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+    
+</section>
